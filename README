@@ -1,0 +1,152 @@
+AAPL Stock Price Time Series Analysis (2016–2026)
+
+A statistical time series analysis of Apple Inc. (NASDAQ: AAPL) stock prices over a 10-year period using R. This project investigates trend behavior, stationarity, and autoregressive modeling on monthly aggregated stock prices.
+
+This project was developed as part of the CIA-3 coursework for the B.Sc. Data Science & Artificial Intelligence program at Christ University Delhi NCR.
+
+Project Overview
+
+Financial time series such as stock prices are typically noisy, non-stationary, and influenced by external events. This project performs a structured statistical workflow to analyze the behavior of AAPL stock prices using classical time series techniques.
+
+The study covers:
+
+2,501 daily observations
+Aggregated into 120 monthly data points
+Analysis period: April 2016 – March 2026
+
+The workflow includes:
+
+Data preprocessing
+Trend analysis using moving averages
+Stationarity diagnostics
+Log transformation and differencing
+Linear regression modelling
+Autoregressive modelling
+Objectives
+Data Acquisition & Preprocessing
+Load AAPL daily price data, convert date format, filter the last 10 years of observations, and aggregate daily prices into monthly averages.
+Trend Analysis
+Identify price trends using Simple Moving Average (SMA) and Exponential Moving Average (EMA) with windows of 3, 6, and 12 months.
+Stationarity Assessment
+Evaluate whether the time series is stationary using ACF, PACF, block mean analysis, and block variance analysis.
+Transformation to Stationarity
+Apply log transformation and first-order differencing to stabilize the series.
+Model Fitting
+Fit statistical models including Linear Regression, AR(1), and AR(2).
+Dataset
+
+The dataset consists of daily Apple Inc. stock prices.
+
+Features include:
+
+Date
+Open
+High
+Low
+Close
+Volume
+
+The data is filtered to retain the most recent 10 years of trading history and aggregated into monthly mean closing prices.
+
+Project Structure
+AAPL-Stock-Price-Analysis
+│
+├── AAPL analysis.R
+│   Full R script containing the time series analysis
+│
+├── AAPL analysis project report.docx
+│   Detailed project report
+│
+├── dataset
+│   aapl_us_d.csv
+│
+└── README.md
+Technologies Used
+
+Programming Language
+
+R
+
+R Libraries
+
+dplyr
+TTR
+
+Statistical Techniques
+
+Moving averages (SMA, EMA)
+ACF and PACF analysis
+Log transformation
+Differencing
+Linear regression
+Autoregressive models
+Key Findings
+
+Trend Analysis
+AAPL stock prices show a strong upward trend over the 10-year period.
+
+Linear Regression Model
+
+Price_t = -7.492 + 2.112 × t
+
+Interpretation:
+
+Average increase ≈ $2.11 per month
+Adjusted R² ≈ 0.9446
+
+This indicates that approximately 94% of the variation in AAPL prices is explained by the time trend.
+
+Non-Stationarity
+
+The original price series exhibited:
+
+Slowly decaying ACF
+Increasing block mean
+Increasing block variance
+
+These are typical properties of non-stationary financial time series.
+
+Stationarity Transformation
+
+Stationarity was achieved through:
+
+Log transformation
+First-order differencing
+
+After transformation:
+
+Mean became approximately constant
+Variance stabilized
+ACF displayed white-noise behavior.
+
+Autoregressive Models
+
+AR(1)
+
+y_t = 0.01655 + 0.2184 y_{t-1}
+
+Adjusted R² ≈ 0.0407
+
+AR(2)
+
+y_t = 0.01773 + 0.2478 y_{t-1} − 0.0998 y_{t-2}
+
+The second lag was not statistically significant, so AR(1) was preferred as the more parsimonious model.
+
+Structural Break
+
+A large spike appears in the transformed series during 2020, corresponding to the global financial shock during the COVID-19 pandemic. This represents a structural break caused by an external real-world event rather than a statistical artifact.
+
+Conclusions
+
+The transformed AAPL series behaves close to a log-normal random walk. This implies that past price changes have limited predictive power, which is consistent with the weak form of the Efficient Market Hypothesis for highly liquid stocks.
+
+Future Work
+
+Possible extensions of this project include:
+
+GARCH models for volatility clustering
+EGARCH and GJR-GARCH models
+LSTM based deep learning models
+Transformer based time series forecasting
+Prophet for trend modeling

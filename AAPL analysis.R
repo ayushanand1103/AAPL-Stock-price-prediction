@@ -2,7 +2,7 @@ library(dplyr)
 library(TTR)
 
 # Load
-AAPL <- read.csv("C:/R/CIA 3 project/aapl_us_d.csv")
+AAPL <- read.csv("C:/R/AAPL Stock price prediction/aapl_us_d.csv")
 
 # Correct format: DD-MM-YYYY
 AAPL$Date <- as.Date(AAPL$Date, format = "%d-%m-%Y")
@@ -343,8 +343,3 @@ plot(y,
 lines(predict(ar2_model),
       col="blue",
       lwd=2)
-
-
-
-
-
