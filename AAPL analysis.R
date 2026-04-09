@@ -343,3 +343,28 @@ plot(y,
 lines(predict(ar2_model),
       col="blue",
       lwd=2)
+
+# No library needed, arima() is built into base R
+# Using diff_vec (already stationary), so d = 0
+p <- 1 
+d <- 0 
+q <- 1
+
+# Fit the model
+manual_fit <- arima(diff_vec, order = c(p, d, q))
+
+# See the AR and MA coefficients
+print(manual_fit)
+
+# Plot the original stationary series
+plot(diff_vec, type = "l", col = "grey", main = "Manual ARIMA(1,0,1) Fit (Base R)")
+
+# Add the fitted values (the model's "predictions" for the past)
+# In base R, fitted values = Original Data - Residuals
+fitted_values <- diff_vec - residuals(manual_fit)
+lines(fitted_values, col = "red", lwd = 2)
+summary(manual_fit)
+
+# Calculation: 1 - (Residual Variance / Total Variance)
+1 - (var(manual_fit$residuals) / var(diff_vec))
+
