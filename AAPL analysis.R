@@ -344,6 +344,35 @@ lines(predict(ar2_model),
       col="blue",
       lwd=2)
 
+
+# 1. Get the fitted returns from your AR(1) model
+# Note: Since AR1 was fit on 'y ~ lag1', it is shorter than diff_vec by 1.
+fitted_ar1_returns <- predict(ar1_model)
+
+# 2. Align the Log Prices
+# We need the log price from the previous period to 'anchor' the return
+# Since AR1 starts from the 2nd element of diff_vec, we use log_vec starting from index 2
+n_ar1 <- length(fitted_ar1_returns)
+log_prices_ar1 <- log_vec[2:(n_ar1 + 1)] 
+
+# 3. Back-transform to Price
+predicted_log_prices_ar1 <- log_prices_ar1 + fitted_ar1_returns
+predicted_prices_ar1     <- exp(predicted_log_prices_ar1)
+actual_prices_ar1        <- monthly_vector[3:(n_ar1 + 2)] # Aligning dates
+
+# 4. Plot the comparison
+plot(actual_prices_ar1, type="l", col="grey70", lwd=2, 
+     main="AR(1) Model: Actual Price vs. Back-Transformed Prediction",
+     ylab="Price (USD)", xlab="Months")
+lines(predicted_prices_ar1, col="dodgerblue", lwd=2)
+
+legend("topleft", legend=c("Actual", "AR(1) Prediction"), 
+       col=c("grey70", "dodgerblue"), lwd=2)
+
+
+
+
+
 # No library needed, arima() is built into base R
 # Using diff_vec (already stationary), so d = 0
 p <- 1 
@@ -368,3 +397,32 @@ summary(manual_fit)
 # Calculation: 1 - (Residual Variance / Total Variance)
 1 - (var(manual_fit$residuals) / var(diff_vec))
 
+
+# 1. Get the fitted values from your ARIMA model (this is in 'returns' space)
+fitted_returns <- diff_vec - residuals(manual_fit)
+
+# 2. Back-transform to the original scale
+# We need the original log prices to add the predicted changes to
+log_prices <- log(monthly_vector)
+
+# Predicted Log Price = Previous Log Price + Predicted Return
+# (Note: We lose the first observation due to differencing)
+n <- length(log_prices)
+predicted_log_prices <- log_prices[1:(n-1)] + fitted_returns
+
+# 3. Convert back to USD
+predicted_prices <- exp(predicted_log_prices)
+actual_prices <- monthly_vector[2:n] # Aligning the dates
+
+# 4. Calculate the REAL Errors (Price Errors)
+price_errors <- actual_prices - predicted_prices
+price_errors
+
+# 5. Plot the Real Price vs. Predicted Price
+plot(actual_prices, type="l", col="grey70", lwd=2, 
+     main="ARIMA: Actual Price vs. Back-Transformed Prediction",
+     ylab="Price (USD)", xlab="Months")
+lines(predicted_prices, col="darkgreen", lwd=2)
+
+legend("topleft", legend=c("Actual AAPL Price", "ARIMA Prediction"), 
+       col=c("grey70", "darkgreen"), lwd=2)
