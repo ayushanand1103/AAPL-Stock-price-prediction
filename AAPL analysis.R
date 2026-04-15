@@ -426,3 +426,43 @@ lines(predicted_prices, col="darkgreen", lwd=2)
 
 legend("topleft", legend=c("Actual AAPL Price", "ARIMA Prediction"), 
        col=c("grey70", "darkgreen"), lwd=2)
+
+
+
+
+# ---------------- AR(2) MODEL → STOCK PRICE PREDICTION ----------------
+
+library(dplyr)
+library(TTR)
+
+# AR(2) model (already using diff_vec = log returns)
+lag1 <- diff_vec[2:(length(diff_vec)-1)]
+lag2 <- diff_vec[1:(length(diff_vec)-2)]
+y <- diff_vec[3:length(diff_vec)]
+
+ar2_model <- lm(y ~ lag1 + lag2)
+
+# Fitted returns from AR(2)
+fitted_ar2_returns <- predict(ar2_model)
+
+# Align log prices (because we lose first 2 observations)
+log_prices_ar2 <- log_vec[3:(length(fitted_ar2_returns) + 2)]
+
+# Convert returns → log prices → actual prices
+predicted_log_prices_ar2 <- log_prices_ar2 + fitted_ar2_returns
+predicted_prices_ar2 <- exp(predicted_log_prices_ar2)
+
+# Actual prices aligned
+actual_prices_ar2 <- monthly_vector[4:(length(fitted_ar2_returns) + 3)]
+
+# ---------------- PLOT ----------------
+plot(actual_prices_ar2, type="l", col="grey70", lwd=2,
+     main="AR(2): Actual vs Predicted AAPL Price",
+     xlab="Months", ylab="Price (USD)")
+
+lines(predicted_prices_ar2, col="blue", lwd=2)
+
+legend("topleft",
+       legend=c("Actual Price", "AR(2) Prediction"),
+       col=c("grey70", "blue"),
+       lwd=2)
